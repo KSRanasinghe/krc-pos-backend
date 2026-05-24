@@ -7,7 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class KrcPosBackendApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(KrcPosBackendApplication.class, args);
+        SpringApplication.run(KrcPosBackendApplication.class, args);
 	}
 
 }
