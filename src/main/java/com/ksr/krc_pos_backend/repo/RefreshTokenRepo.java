@@ -1,5 +1,6 @@
 package com.ksr.krc_pos_backend.repo;
 
+import com.ksr.krc_pos_backend.model.RefreshToken;
 import com.ksr.krc_pos_backend.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -7,7 +8,8 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface UserRepo extends JpaRepository<User,Integer> {
+public interface RefreshTokenRepo extends JpaRepository<RefreshToken, Integer> {
+    Optional<RefreshToken> findByToken(String token);
 
-    Optional<User> findByUsername(String username);
+    void deleteByUser(User user);
 }
