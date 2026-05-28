@@ -13,24 +13,31 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class RefreshTokenService {
-    private final RefreshTokenRepo refreshTokenRepository;
+    private final RefreshTokenRepo refreshTokenRepo;
 
     @Transactional
     public RefreshToken generateRefreshToken(User user) {
-        refreshTokenRepository.deleteByUser(user);
+        RefreshToken existingToken = refreshTokenRepo.findByUser(user).orElse(null);
 
-        RefreshToken refreshToken = RefreshToken.builder()
-                .token(UUID.randomUUID().toString())
-                .user(user)
-                .expiresAt(LocalDateTime.now().plusDays(7))
-                .revoked(false)
-                .build();
+        if (existingToken != null) {
+            existingToken.setToken(UUID.randomUUID().toString());
+            existingToken.setExpiresAt(LocalDateTime.now().plusDays(7));
+            existingToken.setRevoked(false);
+            return refreshTokenRepo.save(existingToken);
+        } else {
+            RefreshToken refreshToken = RefreshToken.builder()
+                    .token(UUID.randomUUID().toString())
+                    .user(user)
+                    .expiresAt(LocalDateTime.now().plusDays(7))
+                    .revoked(false)
+                    .build();
 
-        return refreshTokenRepository.save(refreshToken);
+            return refreshTokenRepo.save(refreshToken);
+        }
     }
 
     public RefreshToken validateRefreshToken(String token) {
-        RefreshToken refreshToken = refreshTokenRepository.findByToken(token)
+        RefreshToken refreshToken = refreshTokenRepo.findByToken(token)
                 .orElseThrow(() -> new RuntimeException("Refresh token not found"));
 
         if (refreshToken.isRevoked() || refreshToken.getExpiresAt().isBefore(LocalDateTime.now())) {
