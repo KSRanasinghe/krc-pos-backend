@@ -14,5 +14,5 @@ import java.util.UUID;
 public class DesignTaskDto {
     private UUID uuid;
     private String name;
-    private boolean isActive;
+    private Boolean isActive;
 }
