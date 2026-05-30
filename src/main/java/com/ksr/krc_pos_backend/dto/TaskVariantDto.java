@@ -15,6 +15,6 @@ public class TaskVariantDto {
     private UUID uuid;
     private String label;
     private Double price;
-    private UUID designTaskUuid;
+    private UUID taskUuid;
     private Boolean isActive;
 }

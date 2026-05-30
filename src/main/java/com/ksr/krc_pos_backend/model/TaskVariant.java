@@ -14,7 +14,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class TaskVariants {
+public class TaskVariant {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
