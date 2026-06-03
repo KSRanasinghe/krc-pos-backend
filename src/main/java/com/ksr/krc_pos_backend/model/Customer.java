@@ -34,9 +34,6 @@ public class Customer {
 
     private String note;
 
-    @Builder.Default
-    private boolean isRegular = false;
-
     @CreationTimestamp
     @Column(nullable = false, unique = true)
     private LocalDateTime createdAt;

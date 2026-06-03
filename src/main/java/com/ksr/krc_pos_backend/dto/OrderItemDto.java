@@ -7,13 +7,14 @@ import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
-@AllArgsConstructor
-@NoArgsConstructor
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
-public class CustomerDto {
+public class OrderItemDto {
     private UUID uuid;
-    private String name;
-    private String phone;
-    private String note;
+    private Integer quantity;
+    private Double unitPrice;
+    private Double discount;
+    private UUID variantUuid;
 }

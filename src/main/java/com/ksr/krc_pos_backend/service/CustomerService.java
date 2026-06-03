@@ -23,27 +23,17 @@ public class CustomerService {
                         .name(customer.getName())
                         .phone(customer.getPhone())
                         .note(customer.getNote())
-                        .isRegular(customer.isRegular())
                         .build())
                 .collect(Collectors.toList());
     }
 
-    public CustomerDto createCustomer(CustomerDto customerDto) {
+    public Customer createCustomer(CustomerDto customerDto) {
         Customer customer = Customer.builder()
                 .name(customerDto.getName())
                 .phone(customerDto.getPhone())
                 .note(customerDto.getNote())
-                .isRegular(customerDto.getIsRegular())
                 .build();
 
-        Customer savedCustomer = customerRepo.save(customer);
-
-        return CustomerDto.builder()
-                .uuid(savedCustomer.getUuid())
-                .name(savedCustomer.getName())
-                .phone(savedCustomer.getPhone())
-                .note(savedCustomer.getNote())
-                .isRegular(savedCustomer.isRegular())
-                .build();
+        return customerRepo.save(customer);
     }
 }
