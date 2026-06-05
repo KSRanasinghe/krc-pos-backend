@@ -31,10 +31,6 @@ public class OrderItem {
     @Column(nullable = false)
     private Double unitPrice;
 
-    @Column(nullable = false)
-    @Builder.Default
-    private Double discount = 0.0;
-
     @ManyToOne
     @JoinColumn(name = "order_id", nullable = false)
     private Order order;

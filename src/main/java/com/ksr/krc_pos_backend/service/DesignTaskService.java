@@ -73,6 +73,7 @@ public class DesignTaskService {
                         .label(variant.getLabel())
                         .price(variant.getPrice())
                         .isActive(variant.isActive())
+                        .taskUuid(variant.getDesignTask().getUuid())
                         .build())
                 .collect(Collectors.toList());
     }
