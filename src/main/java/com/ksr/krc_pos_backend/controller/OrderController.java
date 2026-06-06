@@ -1,6 +1,7 @@
 package com.ksr.krc_pos_backend.controller;
 
-import com.ksr.krc_pos_backend.dto.OrderDetailDto;
+import com.ksr.krc_pos_backend.dto.OrderDetailedDto;
+import com.ksr.krc_pos_backend.dto.OrderRequestDto;
 import com.ksr.krc_pos_backend.dto.OrderSummaryDto;
 import com.ksr.krc_pos_backend.service.OrderService;
 import lombok.RequiredArgsConstructor;
@@ -9,9 +10,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/order")
+@RequestMapping("/api/orders")
 @RequiredArgsConstructor
 public class OrderController {
 
@@ -22,8 +24,13 @@ public class OrderController {
         return ResponseEntity.ok(orderService.getAllOrders());
     }
 
+    @GetMapping("/{uuid}")
+    public ResponseEntity<OrderDetailedDto> getOrder(@PathVariable UUID uuid) {
+        return ResponseEntity.ok(orderService.getOrder(uuid));
+    }
+
     @PostMapping("/")
-    public ResponseEntity<OrderSummaryDto> createOrder(@RequestBody OrderDetailDto orderDetailDto) {
-        return new ResponseEntity<>(orderService.createOrder(orderDetailDto), HttpStatus.CREATED);
+    public ResponseEntity<OrderSummaryDto> createOrder(@RequestBody OrderRequestDto orderReqDto) {
+        return new ResponseEntity<>(orderService.createOrder(orderReqDto), HttpStatus.CREATED);
     }
 }

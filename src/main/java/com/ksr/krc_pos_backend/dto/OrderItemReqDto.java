@@ -11,9 +11,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class OrderItemDto {
-    private UUID uuid;
+public class OrderItemReqDto {
     private Integer quantity;
-    private Double unitPrice;
     private UUID variantUuid;
 }
