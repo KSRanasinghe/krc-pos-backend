@@ -3,6 +3,7 @@ package com.ksr.krc_pos_backend.controller;
 import com.ksr.krc_pos_backend.dto.OrderDetailedDto;
 import com.ksr.krc_pos_backend.dto.OrderRequestDto;
 import com.ksr.krc_pos_backend.dto.OrderSummaryDto;
+import com.ksr.krc_pos_backend.model.enums.OrderStatus;
 import com.ksr.krc_pos_backend.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -32,5 +33,11 @@ public class OrderController {
     @PostMapping("/")
     public ResponseEntity<OrderSummaryDto> createOrder(@RequestBody OrderRequestDto orderReqDto) {
         return new ResponseEntity<>(orderService.createOrder(orderReqDto), HttpStatus.CREATED);
+    }
+
+    @PatchMapping("/{uuid}/status")
+    public ResponseEntity<OrderSummaryDto> updateOrderStatus(
+            @PathVariable UUID uuid, @RequestParam OrderStatus status) {
+        return ResponseEntity.ok(orderService.updateOrderStatus(uuid, status));
     }
 }

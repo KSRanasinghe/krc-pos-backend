@@ -5,6 +5,7 @@ import com.ksr.krc_pos_backend.model.Customer;
 import com.ksr.krc_pos_backend.model.Order;
 import com.ksr.krc_pos_backend.model.OrderItem;
 import com.ksr.krc_pos_backend.model.TaskVariant;
+import com.ksr.krc_pos_backend.model.enums.OrderStatus;
 import com.ksr.krc_pos_backend.repo.CustomerRepo;
 import com.ksr.krc_pos_backend.repo.OrderItemRepo;
 import com.ksr.krc_pos_backend.repo.OrderRepo;
@@ -114,6 +115,26 @@ public class OrderService {
                         .createdAt(order.getCreatedAt())
                         .build())
                 .orderItems(orderItems)
+                .build();
+    }
+
+    public OrderSummaryDto updateOrderStatus(UUID uuid, OrderStatus status) {
+        Order order = orderRepo.findByUuid(uuid)
+                .orElseThrow(() -> new RuntimeException("Order not found"));
+
+        order.setStatus(status);
+        Order savedOrder = orderRepo.save(order);
+
+        return OrderSummaryDto.builder()
+                .uuid(savedOrder.getUuid())
+                .status(savedOrder.getStatus())
+                .customer(CustomerDto.builder()
+                        .uuid(order.getCustomer().getUuid())
+                        .name(order.getCustomer().getName())
+                        .phone(order.getCustomer().getPhone())
+                        .note(order.getCustomer().getNote())
+                        .build())
+                .createdAt(savedOrder.getCreatedAt())
                 .build();
     }
 }
