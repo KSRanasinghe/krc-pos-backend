@@ -28,7 +28,7 @@ public class TaskController {
         return new ResponseEntity<>(taskService.addTask(designTaskDto), HttpStatus.CREATED);
     }
 
-    @PutMapping("/{uuid}/state")
+    @PatchMapping("/{uuid}/state")
     public ResponseEntity<DesignTaskDto> updateTaskState(@PathVariable UUID uuid){
         return new ResponseEntity<>(taskService.updateTaskState(uuid), HttpStatus.OK);
     }
@@ -43,7 +43,7 @@ public class TaskController {
         return new ResponseEntity<>(taskService.addVariant(taskVariantDto), HttpStatus.CREATED);
     }
 
-    @PutMapping("/variants/{uuid}/state")
+    @PatchMapping("/variants/{uuid}/state")
     public ResponseEntity<TaskVariantDto> updateVariantState(@PathVariable UUID uuid){
         return new ResponseEntity<>(taskService.updateVariantState(uuid), HttpStatus.OK);
     }
