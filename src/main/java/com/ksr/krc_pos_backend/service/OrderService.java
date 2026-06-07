@@ -70,8 +70,8 @@ public class OrderService {
                 .build();
     }
 
-    public List<OrderSummaryDto> getAllOrders() {
-        return orderRepo.findAll()
+    public List<OrderSummaryDto> getAllOrders(OrderStatus status, String phone) {
+        return orderRepo.findByFilters(status, phone)
                 .stream()
                 .map(order -> OrderSummaryDto.builder()
                         .uuid(order.getUuid())
@@ -136,5 +136,12 @@ public class OrderService {
                         .build())
                 .createdAt(savedOrder.getCreatedAt())
                 .build();
+    }
+
+    public void deleteOrderItem(UUID uuid) {
+        OrderItem item = orderItemRepo.findByUuid(uuid)
+                .orElseThrow(() -> new RuntimeException("Item not found"));
+
+        orderItemRepo.delete(item);
     }
 }

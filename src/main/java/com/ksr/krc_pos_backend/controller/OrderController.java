@@ -21,8 +21,10 @@ public class OrderController {
     private final OrderService orderService;
 
     @GetMapping("/")
-    public ResponseEntity<List<OrderSummaryDto>> getAllOrders() {
-        return ResponseEntity.ok(orderService.getAllOrders());
+    public ResponseEntity<List<OrderSummaryDto>> getAllOrders(
+            @RequestParam(required = false) OrderStatus status,
+            @RequestParam(required = false) String phone) {
+        return ResponseEntity.ok(orderService.getAllOrders(status, phone));
     }
 
     @GetMapping("/{uuid}")
@@ -39,5 +41,11 @@ public class OrderController {
     public ResponseEntity<OrderSummaryDto> updateOrderStatus(
             @PathVariable UUID uuid, @RequestParam OrderStatus status) {
         return ResponseEntity.ok(orderService.updateOrderStatus(uuid, status));
+    }
+
+    @DeleteMapping("/items/{uuid}")
+    public ResponseEntity<Void> deleteOrderItem(@PathVariable UUID uuid) {
+        orderService.deleteOrderItem(uuid);
+        return ResponseEntity.noContent().build();
     }
 }
