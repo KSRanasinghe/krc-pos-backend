@@ -45,6 +45,10 @@ public class Order {
     @JoinColumn(name = "customer_id",  nullable = false)
     private Customer customer;
 
+    @OneToOne
+    @JoinColumn(name = "invoice_id")
+    private Invoice invoice;
+
     @OneToMany(mappedBy = "order", fetch = FetchType.LAZY)
     private List<OrderItem> orderItems;
 }

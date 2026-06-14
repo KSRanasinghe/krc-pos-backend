@@ -17,5 +17,6 @@ public class OrderSummaryDto {
     private UUID uuid;
     private OrderStatus status;
     private CustomerDto customer;
+    private String invoiceNo;
     private LocalDateTime createdAt;
 }
