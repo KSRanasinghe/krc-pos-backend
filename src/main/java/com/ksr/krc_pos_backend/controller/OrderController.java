@@ -1,6 +1,7 @@
 package com.ksr.krc_pos_backend.controller;
 
 import com.ksr.krc_pos_backend.dto.OrderDetailedDto;
+import com.ksr.krc_pos_backend.dto.OrderItemReqDto;
 import com.ksr.krc_pos_backend.dto.OrderRequestDto;
 import com.ksr.krc_pos_backend.dto.OrderSummaryDto;
 import com.ksr.krc_pos_backend.model.enums.OrderStatus;
@@ -35,6 +36,11 @@ public class OrderController {
     @PostMapping("/")
     public ResponseEntity<OrderSummaryDto> createOrder(@RequestBody OrderRequestDto orderReqDto) {
         return new ResponseEntity<>(orderService.createOrder(orderReqDto), HttpStatus.CREATED);
+    }
+
+    @PostMapping("/{uuid}/items")
+    public ResponseEntity<OrderSummaryDto> addNewItems(@PathVariable UUID uuid, @RequestBody List<OrderItemReqDto> items){
+        return ResponseEntity.ok(orderService.addNewItems(uuid, items));
     }
 
     @PatchMapping("/{uuid}/status")

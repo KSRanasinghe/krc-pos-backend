@@ -19,4 +19,5 @@ public class OrderSummaryDto {
     private CustomerDto customer;
     private String invoiceNo;
     private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 }

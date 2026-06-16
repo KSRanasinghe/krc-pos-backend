@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -67,6 +68,7 @@ public class OrderService {
                         .note(customer.getNote())
                         .build())
                 .createdAt(savedOrder.getCreatedAt())
+                .updatedAt(savedOrder.getUpdatedAt())
                 .build();
     }
 
@@ -83,6 +85,7 @@ public class OrderService {
                                 .note(order.getCustomer().getNote())
                                 .build())
                         .createdAt(order.getCreatedAt())
+                        .updatedAt(order.getUpdatedAt())
                         .build())
                 .collect(Collectors.toList());
     }
@@ -113,6 +116,7 @@ public class OrderService {
                                 .note(order.getCustomer().getNote())
                                 .build())
                         .createdAt(order.getCreatedAt())
+                        .updatedAt(order.getUpdatedAt())
                         .build())
                 .orderItems(orderItems)
                 .build();
@@ -123,19 +127,8 @@ public class OrderService {
                 .orElseThrow(() -> new RuntimeException("Order not found"));
 
         order.setStatus(status);
-        Order savedOrder = orderRepo.save(order);
-
-        return OrderSummaryDto.builder()
-                .uuid(savedOrder.getUuid())
-                .status(savedOrder.getStatus())
-                .customer(CustomerDto.builder()
-                        .uuid(order.getCustomer().getUuid())
-                        .name(order.getCustomer().getName())
-                        .phone(order.getCustomer().getPhone())
-                        .note(order.getCustomer().getNote())
-                        .build())
-                .createdAt(savedOrder.getCreatedAt())
-                .build();
+        order.setUpdatedAt(LocalDateTime.now());
+        return getOrderSummaryDto(order);
     }
 
     public void deleteOrderItem(UUID uuid) {
@@ -143,5 +136,47 @@ public class OrderService {
                 .orElseThrow(() -> new RuntimeException("Item not found"));
 
         orderItemRepo.delete(item);
+    }
+
+    public OrderSummaryDto addNewItems(UUID uuid, List<OrderItemReqDto> items) {
+        Order order = orderRepo.findByUuid(uuid)
+                .orElseThrow(() -> new RuntimeException("Order not found"));
+
+        List<OrderItem> orderItems = items
+                .stream()
+                .map(itemDto -> {
+                    //get the matching variant
+                    TaskVariant variant = variantsRepo.findByUuid(itemDto.getVariantUuid())
+                            .orElseThrow(() -> new RuntimeException("Variant not found"));
+
+                    return OrderItem.builder()
+                            .quantity(itemDto.getQuantity())
+                            .unitPrice(variant.getPrice())
+                            .taskVariant(variant)
+                            .order(order)
+                            .build();
+                })
+                .toList();
+
+        orderItemRepo.saveAll(orderItems);
+        order.setUpdatedAt(LocalDateTime.now());
+        return getOrderSummaryDto(order);
+    }
+
+    private OrderSummaryDto getOrderSummaryDto(Order order) {
+        Order savedOrder = orderRepo.save(order);
+
+        return OrderSummaryDto.builder()
+                .uuid(savedOrder.getUuid())
+                .status(savedOrder.getStatus())
+                .customer(CustomerDto.builder()
+                        .uuid(savedOrder.getCustomer().getUuid())
+                        .name(savedOrder.getCustomer().getName())
+                        .phone(savedOrder.getCustomer().getPhone())
+                        .note(savedOrder.getCustomer().getNote())
+                        .build())
+                .createdAt(savedOrder.getCreatedAt())
+                .updatedAt(savedOrder.getUpdatedAt())
+                .build();
     }
 }
