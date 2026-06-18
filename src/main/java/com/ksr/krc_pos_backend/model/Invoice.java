@@ -33,6 +33,10 @@ public class Invoice {
     @JoinColumn(name = "customer_id", nullable = false)
     private Customer customer;
 
+    @ManyToOne
+    @JoinColumn(name = "order_id", nullable = false)
+    private Order order;
+
     @Enumerated(EnumType.STRING)
     @Builder.Default
     private InvoiceStatus status = InvoiceStatus.UNPAID;
