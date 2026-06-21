@@ -84,6 +84,7 @@ public class OrderService {
                                 .phone(order.getCustomer().getPhone())
                                 .note(order.getCustomer().getNote())
                                 .build())
+                        .invoiceNo(order.getInvoice().getInvNumber())
                         .createdAt(order.getCreatedAt())
                         .updatedAt(order.getUpdatedAt())
                         .build())
@@ -115,6 +116,7 @@ public class OrderService {
                                 .phone(order.getCustomer().getPhone())
                                 .note(order.getCustomer().getNote())
                                 .build())
+                        .invoiceNo(order.getInvoice().getInvNumber())
                         .createdAt(order.getCreatedAt())
                         .updatedAt(order.getUpdatedAt())
                         .build())
@@ -122,11 +124,15 @@ public class OrderService {
                 .build();
     }
 
-    public OrderSummaryDto updateOrderStatus(UUID uuid, OrderStatus status) {
+    public OrderSummaryDto cancelOrder(UUID uuid) {
         Order order = orderRepo.findByUuid(uuid)
                 .orElseThrow(() -> new RuntimeException("Order not found"));
 
-        order.setStatus(status);
+        if (order.getStatus() == OrderStatus.COMPLETED) {
+            throw new RuntimeException("Cannot cancel a completed order");
+        }
+
+        order.setStatus(OrderStatus.CANCELLED);
         order.setUpdatedAt(LocalDateTime.now());
         return getOrderSummaryDto(order);
     }
@@ -175,6 +181,7 @@ public class OrderService {
                         .phone(savedOrder.getCustomer().getPhone())
                         .note(savedOrder.getCustomer().getNote())
                         .build())
+                .invoiceNo(order.getInvoice().getInvNumber())
                 .createdAt(savedOrder.getCreatedAt())
                 .updatedAt(savedOrder.getUpdatedAt())
                 .build();

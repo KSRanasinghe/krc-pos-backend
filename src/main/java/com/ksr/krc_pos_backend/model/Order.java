@@ -46,4 +46,7 @@ public class Order {
 
     @OneToMany(mappedBy = "order", fetch = FetchType.LAZY)
     private List<OrderItem> orderItems;
+
+    @OneToOne(mappedBy = "order")
+    private Invoice invoice;
 }

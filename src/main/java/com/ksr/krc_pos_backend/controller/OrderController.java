@@ -44,9 +44,8 @@ public class OrderController {
     }
 
     @PatchMapping("/{uuid}/status")
-    public ResponseEntity<OrderSummaryDto> updateOrderStatus(
-            @PathVariable UUID uuid, @RequestParam OrderStatus status) {
-        return ResponseEntity.ok(orderService.updateOrderStatus(uuid, status));
+    public ResponseEntity<OrderSummaryDto> cancelOrder(@PathVariable UUID uuid) {
+        return ResponseEntity.ok(orderService.cancelOrder(uuid));
     }
 
     @DeleteMapping("/items/{uuid}")

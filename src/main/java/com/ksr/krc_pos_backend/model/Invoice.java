@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -33,9 +34,18 @@ public class Invoice {
     @JoinColumn(name = "customer_id", nullable = false)
     private Customer customer;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "order_id", nullable = false)
     private Order order;
+
+    @Column(nullable = false, updatable = false)
+    private Double total;
+
+    @Column(nullable = false, updatable = false)
+    private Double discount;
+
+    @Column(nullable = false, updatable = false)
+    private Double netTotal;
 
     @Enumerated(EnumType.STRING)
     @Builder.Default
@@ -43,4 +53,7 @@ public class Invoice {
 
     @CreationTimestamp
     private LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
 }
