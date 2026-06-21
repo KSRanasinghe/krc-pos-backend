@@ -1,10 +1,13 @@
 package com.ksr.krc_pos_backend.controller;
 
+import com.ksr.krc_pos_backend.dto.InvoiceSummaryDto;
+import com.ksr.krc_pos_backend.model.enums.InvoiceStatus;
 import com.ksr.krc_pos_backend.service.InvoiceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -13,6 +16,15 @@ import java.util.UUID;
 public class InvoiceController {
 
     private final InvoiceService invoiceService;
+
+    @GetMapping("/")
+    public ResponseEntity<List<InvoiceSummaryDto>> getAllInvoices(
+            @RequestParam(required = false) String invNo,
+            @RequestParam(required = false) String phone,
+            @RequestParam(required = false) InvoiceStatus status
+    ) {
+        return ResponseEntity.ok(invoiceService.getAllInvoices(invNo, phone, status));
+    }
 
     @PostMapping("/{orderUuid}")
     public ResponseEntity<Void> createInvoice(

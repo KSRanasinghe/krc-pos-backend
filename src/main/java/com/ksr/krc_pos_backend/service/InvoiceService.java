@@ -1,7 +1,9 @@
 package com.ksr.krc_pos_backend.service;
 
+import com.ksr.krc_pos_backend.dto.InvoiceSummaryDto;
 import com.ksr.krc_pos_backend.model.Invoice;
 import com.ksr.krc_pos_backend.model.Order;
+import com.ksr.krc_pos_backend.model.enums.InvoiceStatus;
 import com.ksr.krc_pos_backend.model.enums.OrderStatus;
 import com.ksr.krc_pos_backend.repo.InvoiceRepo;
 import com.ksr.krc_pos_backend.repo.OrderRepo;
@@ -9,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -49,5 +52,21 @@ public class InvoiceService {
         order.setStatus(OrderStatus.COMPLETED);
         order.setInvoice(invoice);
         orderRepo.save(order);
+    }
+
+    public List<InvoiceSummaryDto> getAllInvoices(String invNo, String phone, InvoiceStatus status) {
+        String formattedInvNo = invNo != null ? "INV-" + invNo : null;
+        return invoiceRepo.findByFilters(formattedInvNo, phone, status)
+                .stream()
+                .map(invoice -> InvoiceSummaryDto.builder()
+                        .uuid(invoice.getUuid())
+                        .invNo(invoice.getInvNumber())
+                        .customer(invoice.getCustomer().getName())
+                        .netTotal(invoice.getNetTotal())
+                        .status(invoice.getStatus())
+                        .createdAt(invoice.getCreatedAt())
+                        .updatedAt(invoice.getUpdatedAt())
+                        .build())
+                .toList();
     }
 }
