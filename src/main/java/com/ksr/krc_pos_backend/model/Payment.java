@@ -24,8 +24,10 @@ public class Payment {
     private Integer id;
 
     @Column(unique = true, nullable = false, updatable = false)
-    private UUID uuid;
+    @Builder.Default
+    private UUID uuid  = UUID.randomUUID();
 
+    @Column(nullable = false, updatable = false)
     private Double amount;
 
     @Enumerated(EnumType.STRING)

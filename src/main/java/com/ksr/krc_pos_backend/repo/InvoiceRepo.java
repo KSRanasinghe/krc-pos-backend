@@ -9,9 +9,13 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @Repository
 public interface InvoiceRepo extends JpaRepository<Invoice, Integer> {
+    Optional<Invoice> findByUuid(UUID uuid);
+
     @Query("SELECT i FROM Invoice i WHERE " +
             "(:invNo IS NULL OR i.invNumber = :invNo) AND " +
             "(:status IS NULL OR i.status = :status) AND " +
