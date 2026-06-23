@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -53,5 +54,20 @@ public class PaymentService {
                 .method(savedPayment.getMethod())
                 .paidAt(savedPayment.getPaidAt())
                 .build();
+    }
+
+    public List<PaymentResDto> getAllPayments(String invNo) {
+        String formattedInvNo = invNo != null ? "INV-" + invNo : null;
+
+        return paymentRepo.findByFilters(formattedInvNo)
+                .stream()
+                .map(payment -> PaymentResDto.builder()
+                        .uuid(payment.getUuid())
+                        .invNo(payment.getInvoice().getInvNumber())
+                        .amount(payment.getAmount())
+                        .method(payment.getMethod())
+                        .paidAt(payment.getPaidAt())
+                        .build())
+                .toList();
     }
 }
