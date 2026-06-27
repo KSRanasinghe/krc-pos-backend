@@ -20,7 +20,7 @@ public class InvoiceController {
 
     private final InvoiceService invoiceService;
 
-    @GetMapping("/")
+    @GetMapping
     public ResponseEntity<List<InvoiceSummaryDto>> getAllInvoices(
             @RequestParam(required = false) String invNo,
             @RequestParam(required = false) String phone,

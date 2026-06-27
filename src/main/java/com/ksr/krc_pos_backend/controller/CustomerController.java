@@ -15,12 +15,6 @@ public class CustomerController {
 
     private final CustomerService customerService;
 
-    // Testing purposes only
-//    @PostMapping("/")
-//    public ResponseEntity<CustomerDto> createCustomer(@RequestBody CustomerDto customerDto) {
-//        return ResponseEntity.ok(customerService.createCustomer(customerDto));
-//    }
-
     @GetMapping("/search")
     public ResponseEntity<List<CustomerDto>> searchByPhone(@RequestParam String phone) {
         return ResponseEntity.ok(customerService.searchByPhone(phone));

@@ -18,12 +18,12 @@ public class TaskController {
 
     private final DesignTaskService taskService;
 
-    @GetMapping("/")
+    @GetMapping
     public ResponseEntity<List<DesignTaskDto>>  getAllTasks() {
         return new ResponseEntity<>(taskService.getAllTasks(), HttpStatus.OK);
     }
 
-    @PostMapping("/")
+    @PostMapping
     public ResponseEntity<DesignTaskDto> addTask(@RequestBody DesignTaskDto designTaskDto) {
         return new ResponseEntity<>(taskService.addTask(designTaskDto), HttpStatus.CREATED);
     }

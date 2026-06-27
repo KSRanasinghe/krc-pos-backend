@@ -34,7 +34,7 @@ public class SecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers("/**") //need to remove after completing the overall api
+                        .requestMatchers("/api/auth/**", "/swagger-ui/**", "/v3/api-docs/**") //need to remove when deploying
 //                        .requestMatchers("/api/auth/**") //need to uncomment after completing the overall api
                         .permitAll()
                         .anyRequest()

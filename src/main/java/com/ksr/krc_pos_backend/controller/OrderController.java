@@ -21,7 +21,7 @@ public class OrderController {
 
     private final OrderService orderService;
 
-    @GetMapping("/")
+    @GetMapping
     public ResponseEntity<List<OrderSummaryDto>> getAllOrders(
             @RequestParam(required = false) OrderStatus status,
             @RequestParam(required = false) String phone) {
@@ -33,7 +33,7 @@ public class OrderController {
         return ResponseEntity.ok(orderService.getOrder(uuid));
     }
 
-    @PostMapping("/")
+    @PostMapping
     public ResponseEntity<OrderSummaryDto> createOrder(@RequestBody OrderRequestDto orderReqDto) {
         return new ResponseEntity<>(orderService.createOrder(orderReqDto), HttpStatus.CREATED);
     }

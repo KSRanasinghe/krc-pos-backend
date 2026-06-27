@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class DashBoardController {
     private final DashboardService dashboardService;
 
-    @GetMapping("/")
+    @GetMapping
     public ResponseEntity<DashboardDto> getDashboard() {
         return ResponseEntity.ok(dashboardService.getDashboard());
     }
