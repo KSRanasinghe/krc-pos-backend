@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title th:text="${'Invoice – ' + invoice.invNumber}">Invoice</title>
+    <style>
+        @font-face {
+            font-family: 'Inter';
+            font-weight: 400;
+            src: url('/static/fonts/Inter-Regular.ttf');
+        }
+
+        @font-face {
+            font-family: 'Inter';
+            font-weight: 700;
+            src: url('/static/fonts/Inter-Bold.ttf');
+        }
+
+        @page {
+            size: A4;
+            margin: 0.5in;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: #000;
+            margin: 0;
+            padding: 0;
+            font-size: 10pt;
+            font-weight: 400;
+            line-height: 1.3;
+        }
+
+        /* ── Header ── */
+        .header-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        .invoice-title {
+            font-family: 'Inter', sans-serif;
+            font-size: 36pt;
+            font-weight: 700;
+            font-style: normal;
+            line-height: 1;
+            vertical-align: top;
+            letter-spacing: -3px;
+        }
+
+        .company-details {
+            text-align: right;
+            font-size: 9.5pt;
+            line-height: 1.5;
+            font-weight: 400;
+            vertical-align: top;
+        }
+
+        .company-name {
+            font-weight: 700;
+            font-size: 11pt;
+            margin-bottom: 2px;
+        }
+
+        /* ── Invoice Meta ── */
+        .meta-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 14px;
+        }
+
+        .meta-table td {
+            padding: 3px 0;
+            font-size: 10pt;
+        }
+
+        .meta-label {
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .meta-value {
+            border-bottom: 1px dotted #888;
+            padding-bottom: 1px;
+            display: inline-block;
+            width: 100%;
+        }
+
+        /* ── Section Banner ── */
+        .section-banner {
+            background-color: #e5e5e5;
+            padding: 5px 8px;
+            font-weight: 700;
+            font-size: 10pt;
+            margin-bottom: 10px;
+        }
+
+        /* ── Billing Info ── */
+        .billing-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 18px;
+        }
+
+        .billing-table td {
+            padding: 3px 0;
+            font-size: 10pt;
+        }
+
+        .billing-label {
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .billing-value {
+            border-bottom: 1px dotted #888;
+            display: inline-block;
+            width: 100%;
+        }
+
+        /* ── Items Table ── */
+        .items-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 26px;
+            table-layout: fixed;
+        }
+
+        .items-table th {
+            background-color: #e5e5e5;
+            font-weight: 700;
+            font-size: 10pt;
+            padding: 7px 8px;
+            border: 0.5px solid #bbb;
+            text-align: center;
+        }
+
+        .items-table th.item-col {
+            text-align: left;
+        }
+
+        .items-table td {
+            padding: 7px 8px;
+            border: 0.5px solid #d0d0d0;
+            font-size: 10pt;
+            vertical-align: middle;
+        }
+
+        .items-table tbody tr:nth-child(even) td {
+            background-color: #f7f7f7;
+        }
+
+        /* ── Bottom Layout ── */
+        .bottom-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .bottom-table td {
+            vertical-align: top;
+        }
+
+        .notes-card {
+            background-color: #f0f0f0;
+            padding: 10px 12px;
+            font-size: 9pt;
+            line-height: 1.5;
+        }
+
+        .notes-card strong {
+            font-size: 10pt;
+            font-weight: 700;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .notes-card ul {
+            margin: 0;
+            padding-left: 14px;
+        }
+
+        .notes-card li {
+            margin-bottom: 3px;
+        }
+
+        .payment-card {
+            background-color: #f0f0f0;
+            padding: 10px 12px;
+            font-size: 9pt;
+            line-height: 1.6;
+        }
+
+        .payment-card strong {
+            font-size: 10pt;
+            font-weight: 700;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        /* ── Totals Table ── */
+        .total-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .total-table td {
+            border: 0.5px solid #d0d0d0;
+            padding: 6px 8px;
+            font-size: 10pt;
+        }
+
+        .total-table .label-cell {
+            font-weight: 700;
+            width: 50%;
+        }
+
+        .total-table .net-row td {
+            font-weight: 700;
+            font-size: 10.5pt;
+            background-color: #e5e5e5;
+            border-color: #bbb;
+        }
+
+        /* ── Footer ── */
+        .footer-contacts {
+            margin-top: 32px;
+            border-top: 0.5px solid #ccc;
+            padding-top: 9px;
+            width: 100%;
+        }
+
+        .contact-row {
+            margin-bottom: 3px;
+            font-size: 9.5pt;
+        }
+
+        .copyright-row {
+            text-align: right;
+            font-size: 9pt;
+            color: #444;
+        }
+    </style>
+</head>
+<body>
+
+<!-- ── Header ── -->
+<table class="header-table">
+    <tr>
+        <td class="invoice-title">Invoice</td>
+        <td class="company-details">
+            <div class="company-name">KR Creations</div>
+            <div>44/20A, Mahenawatta,</div>
+            <div>Pahala Imbulgoda, Imbulgoda.</div>
+        </td>
+    </tr>
+</table>
+
+<!-- ── Invoice Meta ── -->
+<table class="meta-table">
+    <tr>
+        <td style="width: 13%;" class="meta-label">Invoice No:</td>
+        <td style="width: 37%; padding-right: 12px;">
+            <span class="meta-value" th:text="${invoice.invNumber}"></span>
+        </td>
+        <td style="width: 15%; text-align: right; padding-right: 8px;" class="meta-label">Date / Time:</td>
+        <td style="width: 35%;">
+            <span class="meta-value"
+                  th:text="${#temporals.format(invoice.createdAt, 'yyyy-MM-dd  HH:mm:ss')}"></span>
+        </td>
+    </tr>
+</table>
+
+<!-- ── Billing Banner ── -->
+<div class="section-banner">Billing Information</div>
+
+<!-- ── Billing Info ── -->
+<table class="billing-table">
+    <tr>
+        <td style="width: 7%;" class="billing-label">Name:</td>
+        <td style="width: 50%; padding-right: 12px;">
+            <span class="billing-value" th:text="${invoice.customer.name}"></span>
+        </td>
+        <td style="width: 10%; text-align: right; padding-right: 8px;" class="billing-label">Phone:</td>
+        <td style="width: 33%;">
+            <span class="billing-value" th:text="${invoice.customer.phone}"></span>
+        </td>
+    </tr>
+</table>
+
+<!-- ── Items Table ── -->
+<table class="items-table">
+    <colgroup>
+        <col style="width: 35%;"/>
+        <col style="width: 15%;"/>
+        <col style="width: 10%;"/>
+        <col style="width: 20%;"/>
+        <col style="width: 20%;"/>
+    </colgroup>
+    <thead>
+    <tr>
+        <th class="item-col">Item</th>
+        <th>Type</th>
+        <th>Qty</th>
+        <th style="text-align: right;">Unit Price (Rs.)</th>
+        <th style="text-align: right;">Subtotal (Rs.)</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="item : ${orderItems}">
+        <td th:text="${item.taskVariant.designTask.name}"></td>
+        <td style="text-align: center;" th:text="${item.taskVariant.label}"></td>
+        <td style="text-align: center;" th:text="${item.quantity}"></td>
+        <td style="text-align: right;"
+            th:text="${#numbers.formatDecimal(item.unitPrice, 1, 'COMMA', 2, 'POINT')}"></td>
+        <td style="text-align: right;"
+            th:text="${#numbers.formatDecimal(item.quantity * item.unitPrice, 1, 'COMMA', 2, 'POINT')}"></td>
+    </tr>
+    </tbody>
+</table>
+
+<!-- ── Bottom Layout ── -->
+<table class="bottom-table">
+    <tr>
+        <!-- Notes -->
+        <td style="width: 40%;" class="notes-card">
+            <strong>Notes:</strong>
+            <ul>
+                <li>This invoice reflects the agreed service charges as per our standard rates.</li>
+                <li>Digitally generated by KR Creations — valid without a physical signature.</li>
+            </ul>
+        </td>
+
+        <td style="width: 3%; padding: 0;">&nbsp;</td>
+
+        <!-- Payment Details -->
+        <td style="width: 24%;" class="payment-card">
+            <strong>Payment Details:</strong>
+            <div>R. L. K. S. Ranasinghe</div>
+            <div>Commercial Bank</div>
+            <div>8003063794</div>
+            <div>Gampaha</div>
+        </td>
+
+        <td style="width: 5%; padding: 0;">&nbsp;</td>
+
+        <!-- Totals -->
+        <td style="width: 28%; vertical-align: top;">
+            <table class="total-table">
+                <tr>
+                    <td class="label-cell">Total</td>
+                    <td style="text-align: right;"
+                        th:text="${'Rs. ' + #numbers.formatDecimal(invoice.total, 1, 'COMMA', 2, 'POINT')}"></td>
+                </tr>
+                <tr>
+                    <td class="label-cell">Discount</td>
+                    <td style="text-align: right;"
+                        th:text="${'Rs. ' + #numbers.formatDecimal(invoice.discount, 1, 'COMMA', 2, 'POINT')}"></td>
+                </tr>
+                <tr class="net-row">
+                    <td class="label-cell">Net Total</td>
+                    <td style="text-align: right;"
+                        th:text="${'Rs. ' + #numbers.formatDecimal(invoice.netTotal, 1, 'COMMA', 2, 'POINT')}"></td>
+                </tr>
+                <tr>
+                    <td class="label-cell">Status</td>
+                    <td style="text-align: right;" th:switch="${invoice.status.name()}">
+                        <span th:case="'PAID'" style="font-weight: 700;">Paid</span>
+                        <span th:case="'PENDING'" style="font-weight: 700;">Pending</span>
+                        <span th:case="'PARTIAL'" style="font-weight: 700;">Partial</span>
+                        <span th:case="*" th:text="${invoice.status}" style="font-weight: 700;"></span>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+<!-- ── Footer ── -->
+<div class="footer-contacts">
+    <table style="width: 100%; border-collapse: collapse;">
+        <tr>
+            <td style="width: 50%;">
+                <div class="contact-row">Email: services.krcreations@gmail.com</div>
+                <div class="contact-row">WhatsApp: (+94) 76 428 2345</div>
+            </td>
+            <td style="width: 50%;" class="copyright-row">
+                &copy; <span th:text="${#temporals.format(#temporals.createNow(), 'yyyy')}"></span> KR Creations. All rights reserved.
+            </td>
+        </tr>
+    </table>
+</div>
+
+</body>
+</html>

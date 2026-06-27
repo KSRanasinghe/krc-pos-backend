@@ -3,10 +3,13 @@ package com.ksr.krc_pos_backend.service;
 import com.ksr.krc_pos_backend.dto.InvoiceSummaryDto;
 import com.ksr.krc_pos_backend.model.Invoice;
 import com.ksr.krc_pos_backend.model.Order;
+import com.ksr.krc_pos_backend.model.OrderItem;
 import com.ksr.krc_pos_backend.model.enums.InvoiceStatus;
 import com.ksr.krc_pos_backend.model.enums.OrderStatus;
 import com.ksr.krc_pos_backend.repo.InvoiceRepo;
+import com.ksr.krc_pos_backend.repo.OrderItemRepo;
 import com.ksr.krc_pos_backend.repo.OrderRepo;
+import com.ksr.krc_pos_backend.util.PdfResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,9 +23,11 @@ public class InvoiceService {
 
     private final InvoiceRepo invoiceRepo;
     private final OrderRepo orderRepo;
+    private final OrderItemRepo orderItemRepo;
+    private final PdfService pdfService;
 
     @Transactional
-    public void createInvoice(UUID orderUuid, Double discount) {
+    public PdfResponse createInvoice(UUID orderUuid, Double discount) throws Exception {
         //1. find order
         Order order = orderRepo.findByUuid(orderUuid)
                 .orElseThrow(() -> new RuntimeException("Order not found"));
@@ -48,10 +53,11 @@ public class InvoiceService {
                 .netTotal(netTotal)
                 .build();
 
-        invoiceRepo.save(invoice);
+        Invoice savedInvoice = invoiceRepo.save(invoice);
         order.setStatus(OrderStatus.COMPLETED);
         order.setInvoice(invoice);
         orderRepo.save(order);
+        return getInvoicePdf(savedInvoice.getUuid());
     }
 
     public List<InvoiceSummaryDto> getAllInvoices(String invNo, String phone, InvoiceStatus status) {
@@ -68,5 +74,14 @@ public class InvoiceService {
                         .updatedAt(invoice.getUpdatedAt())
                         .build())
                 .toList();
+    }
+
+    public PdfResponse getInvoicePdf(UUID uuid) throws Exception {
+        Invoice invoice = invoiceRepo.findByUuid(uuid)
+                .orElseThrow(() -> new RuntimeException("Invoice not found"));
+
+        List<OrderItem> orderItems = orderItemRepo.findByOrder(invoice.getOrder());
+
+        return pdfService.generateInvoicePdf(invoice, orderItems);
     }
 }

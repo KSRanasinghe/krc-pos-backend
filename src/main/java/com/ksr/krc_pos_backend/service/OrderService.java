@@ -58,36 +58,13 @@ public class OrderService {
 
         orderItemRepo.saveAll(orderItems);
 
-        return OrderSummaryDto.builder()
-                .uuid(savedOrder.getUuid())
-                .status(savedOrder.getStatus())
-                .customer(CustomerDto.builder()
-                        .uuid(customer.getUuid())
-                        .name(customer.getName())
-                        .phone(customer.getPhone())
-                        .note(customer.getNote())
-                        .build())
-                .createdAt(savedOrder.getCreatedAt())
-                .updatedAt(savedOrder.getUpdatedAt())
-                .build();
+        return getOrderSummaryDto(savedOrder);
     }
 
     public List<OrderSummaryDto> getAllOrders(OrderStatus status, String phone) {
         return orderRepo.findByFilters(status, phone)
                 .stream()
-                .map(order -> OrderSummaryDto.builder()
-                        .uuid(order.getUuid())
-                        .status(order.getStatus())
-                        .customer(CustomerDto.builder()
-                                .uuid(order.getCustomer().getUuid())
-                                .name(order.getCustomer().getName())
-                                .phone(order.getCustomer().getPhone())
-                                .note(order.getCustomer().getNote())
-                                .build())
-                        .invoiceNo(order.getInvoice().getInvNumber())
-                        .createdAt(order.getCreatedAt())
-                        .updatedAt(order.getUpdatedAt())
-                        .build())
+                .map(this::getOrderSummaryDto)
                 .collect(Collectors.toList());
     }
 
@@ -107,19 +84,7 @@ public class OrderService {
                 .toList();
 
         return OrderDetailedDto.builder()
-                .order(OrderSummaryDto.builder()
-                        .uuid(order.getUuid())
-                        .status(order.getStatus())
-                        .customer(CustomerDto.builder()
-                                .uuid(order.getCustomer().getUuid())
-                                .name(order.getCustomer().getName())
-                                .phone(order.getCustomer().getPhone())
-                                .note(order.getCustomer().getNote())
-                                .build())
-                        .invoiceNo(order.getInvoice().getInvNumber())
-                        .createdAt(order.getCreatedAt())
-                        .updatedAt(order.getUpdatedAt())
-                        .build())
+                .order(getOrderSummaryDto(order))
                 .orderItems(orderItems)
                 .build();
     }
@@ -134,7 +99,8 @@ public class OrderService {
 
         order.setStatus(OrderStatus.CANCELLED);
         order.setUpdatedAt(LocalDateTime.now());
-        return getOrderSummaryDto(order);
+        Order savedOrder = orderRepo.save(order);
+        return getOrderSummaryDto(savedOrder);
     }
 
     public void deleteOrderItem(UUID uuid) {
@@ -166,24 +132,23 @@ public class OrderService {
 
         orderItemRepo.saveAll(orderItems);
         order.setUpdatedAt(LocalDateTime.now());
-        return getOrderSummaryDto(order);
+        Order savedOrder = orderRepo.save(order);
+        return getOrderSummaryDto(savedOrder);
     }
 
     private OrderSummaryDto getOrderSummaryDto(Order order) {
-        Order savedOrder = orderRepo.save(order);
-
         return OrderSummaryDto.builder()
-                .uuid(savedOrder.getUuid())
-                .status(savedOrder.getStatus())
+                .uuid(order.getUuid())
+                .status(order.getStatus())
                 .customer(CustomerDto.builder()
-                        .uuid(savedOrder.getCustomer().getUuid())
-                        .name(savedOrder.getCustomer().getName())
-                        .phone(savedOrder.getCustomer().getPhone())
-                        .note(savedOrder.getCustomer().getNote())
+                        .uuid(order.getCustomer().getUuid())
+                        .name(order.getCustomer().getName())
+                        .phone(order.getCustomer().getPhone())
+                        .note(order.getCustomer().getNote())
                         .build())
-                .invoiceNo(order.getInvoice().getInvNumber())
-                .createdAt(savedOrder.getCreatedAt())
-                .updatedAt(savedOrder.getUpdatedAt())
+                .invoiceNo(order.getInvoice() != null ? order.getInvoice().getInvNumber() : null)
+                .createdAt(order.getCreatedAt())
+                .updatedAt(order.getUpdatedAt())
                 .build();
     }
 }
