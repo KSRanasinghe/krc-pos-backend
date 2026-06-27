@@ -18,4 +18,9 @@ public interface PaymentRepo extends JpaRepository<Payment, Integer> {
     @Query("SELECT p FROM Payment p WHERE " +
             "(:invNo IS NULL OR p.invoice.invNumber = :invNo)")
     List<Payment> findByFilters(@Param("invNo") String invNo);
+
+    @Query("SELECT COALESCE(SUM(p.amount), 0) FROM Payment p WHERE " +
+            "MONTH(p.paidAt) = MONTH(CURRENT_DATE) AND " +
+            "YEAR(p.paidAt) = YEAR(CURRENT_DATE)")
+    Double getMonthlyRevenue();
 }

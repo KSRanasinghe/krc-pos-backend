@@ -2,7 +2,6 @@ package com.ksr.krc_pos_backend.repo;
 
 import com.ksr.krc_pos_backend.model.Invoice;
 import com.ksr.krc_pos_backend.model.enums.InvoiceStatus;
-import com.ksr.krc_pos_backend.model.enums.OrderStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -24,4 +23,6 @@ public interface InvoiceRepo extends JpaRepository<Invoice, Integer> {
             @Param("invNo") String invNo,
             @Param("phone") String phone,
             @Param("status") InvoiceStatus status);
+
+    long countByStatus(InvoiceStatus status);
 }

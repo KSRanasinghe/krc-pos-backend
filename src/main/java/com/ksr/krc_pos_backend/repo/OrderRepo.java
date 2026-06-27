@@ -20,4 +20,6 @@ public interface OrderRepo extends JpaRepository<Order, Integer> {
             "(:phone IS NULL OR o.customer.phone = :phone)")
     List<Order> findByFilters(@Param("status") OrderStatus status,
                               @Param("phone") String phone);
+
+    long countByStatus(OrderStatus status);
 }
