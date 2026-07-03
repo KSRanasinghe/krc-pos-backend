@@ -1,6 +1,7 @@
 package com.ksr.krc_pos_backend.config;
 
 import com.ksr.krc_pos_backend.security.JwtFilter;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -39,9 +40,11 @@ public class SecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .exceptionHandling(ex -> ex
+                        .authenticationEntryPoint((request, response, authException) ->
+                                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized")))
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers("/api/auth/**", "/swagger-ui/**", "/v3/api-docs/**") //need to remove when deploying
-//                        .requestMatchers("/api/auth/**") //need to uncomment after completing the overall api
+                        .requestMatchers("/api/auth/**", "/swagger-ui/**", "/v3/api-docs/**")
                         .permitAll()
                         .anyRequest()
                         .authenticated())
