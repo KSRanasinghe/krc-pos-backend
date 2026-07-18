@@ -35,11 +35,17 @@ public class OrderService {
         Customer customer = customerRepo.findByPhone(orderReqDto.getCustomer().getPhone())
                 .orElseGet(() -> customerService.createCustomer(orderReqDto.getCustomer()));
 
-        //2. save new order
-        Order order = Order.builder().customer(customer).build();
+        //2. generate order no
+        long count = orderRepo.count() + 1;
+        String orderNumber = String.format("ORD-%04d", count);
+
+        //3. save new order
+        Order order = Order.builder()
+                .orderNo(orderNumber)
+                .customer(customer).build();
         Order savedOrder = orderRepo.save(order);
 
-        //3. iterating the item list and saving each item to db
+        //4. iterating the item list and saving each item to db
         List<OrderItem> orderItems = orderReqDto.getOrderItems()
                 .stream()
                 .map(itemDto -> {
@@ -61,8 +67,9 @@ public class OrderService {
         return getOrderSummaryDto(savedOrder);
     }
 
-    public List<OrderSummaryDto> getAllOrders(OrderStatus status, String phone) {
-        return orderRepo.findByFilters(status, phone)
+    public List<OrderSummaryDto> getAllOrders(OrderStatus status, String orderNo, String phone) {
+        String formattedOrderNo = orderNo != null ? "ORD-" + orderNo : null;
+        return orderRepo.findByFilters(status, formattedOrderNo, phone)
                 .stream()
                 .map(this::getOrderSummaryDto)
                 .collect(Collectors.toList());
@@ -139,6 +146,7 @@ public class OrderService {
     private OrderSummaryDto getOrderSummaryDto(Order order) {
         return OrderSummaryDto.builder()
                 .uuid(order.getUuid())
+                .orderNo(order.getOrderNo())
                 .status(order.getStatus())
                 .customer(CustomerDto.builder()
                         .uuid(order.getCustomer().getUuid())

@@ -15,6 +15,7 @@ import java.util.UUID;
 @Builder
 public class OrderSummaryDto {
     private UUID uuid;
+    private String orderNo;
     private OrderStatus status;
     private CustomerDto customer;
     private String invoiceNo;

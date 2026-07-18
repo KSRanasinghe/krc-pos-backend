@@ -24,8 +24,9 @@ public class OrderController {
     @GetMapping
     public ResponseEntity<List<OrderSummaryDto>> getAllOrders(
             @RequestParam(required = false) OrderStatus status,
+            @RequestParam(required = false) String orderNo,
             @RequestParam(required = false) String phone) {
-        return ResponseEntity.ok(orderService.getAllOrders(status, phone));
+        return ResponseEntity.ok(orderService.getAllOrders(status, orderNo, phone));
     }
 
     @GetMapping("/{uuid}")

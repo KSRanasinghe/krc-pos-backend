@@ -258,12 +258,16 @@
 <!-- ── Invoice Meta ── -->
 <table class="meta-table">
     <tr>
-        <td style="width: 13%;" class="meta-label">Invoice No:</td>
-        <td style="width: 37%; padding-right: 12px;">
+        <td style="width: 10%;" class="meta-label">Order No:</td>
+        <td style="width: 22%; padding-right: 12px;">
+            <span class="meta-value" th:text="${invoice.order.orderNo}"></span>
+        </td>
+        <td style="width: 11%;" class="meta-label">Invoice No:</td>
+        <td style="width: 22%; padding-right: 12px;">
             <span class="meta-value" th:text="${invoice.invNumber}"></span>
         </td>
-        <td style="width: 15%; text-align: right; padding-right: 8px;" class="meta-label">Date / Time:</td>
-        <td style="width: 35%;">
+        <td style="width: 13%; text-align: right; padding-right: 8px;" class="meta-label">Date / Time:</td>
+        <td style="width: 22%;">
             <span class="meta-value"
                   th:text="${#temporals.format(invoice.createdAt, 'yyyy-MM-dd  HH:mm:ss')}"></span>
         </td>
@@ -384,7 +388,8 @@
                 <div class="contact-row">WhatsApp: (+94) 76 428 2345</div>
             </td>
             <td style="width: 50%;" class="copyright-row">
-                &copy; <span th:text="${#temporals.format(#temporals.createNow(), 'yyyy')}"></span> KR Creations. All rights reserved.
+                &copy; <span th:text="${#temporals.format(#temporals.createNow(), 'yyyy')}"></span> KR Creations. All
+                rights reserved.
             </td>
         </tr>
     </table>

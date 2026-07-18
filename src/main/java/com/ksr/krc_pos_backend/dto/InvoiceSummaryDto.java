@@ -17,6 +17,7 @@ import java.util.UUID;
 public class InvoiceSummaryDto {
     private UUID uuid;
     private String invNo;
+    private String orderNo;
     private String customer;
     private Double netTotal;
     private InvoiceStatus status;

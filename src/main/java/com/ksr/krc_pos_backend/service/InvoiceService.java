@@ -67,6 +67,7 @@ public class InvoiceService {
                 .map(invoice -> InvoiceSummaryDto.builder()
                         .uuid(invoice.getUuid())
                         .invNo(invoice.getInvNumber())
+                        .orderNo(invoice.getOrder().getOrderNo())
                         .customer(invoice.getCustomer().getName())
                         .netTotal(invoice.getNetTotal())
                         .status(invoice.getStatus())

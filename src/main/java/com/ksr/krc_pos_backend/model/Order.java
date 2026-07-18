@@ -29,6 +29,9 @@ public class Order {
     @Builder.Default
     private UUID uuid  = UUID.randomUUID();
 
+    @Column(nullable = false, unique = true, updatable = false)
+    private String orderNo;
+
     @Enumerated(EnumType.STRING)
     @Builder.Default
     private OrderStatus status =  OrderStatus.PENDING;
