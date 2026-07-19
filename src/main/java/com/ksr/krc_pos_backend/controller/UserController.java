@@ -30,4 +30,10 @@ public class UserController {
     public ResponseEntity<AuthResponseDto> validateRefreshToken(@RequestParam String refreshToken) {
         return new ResponseEntity<>(userService.validateRefreshToken(refreshToken), HttpStatus.OK);
     }
+
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(@RequestParam String refreshToken) {
+        userService.logout(refreshToken);
+        return ResponseEntity.noContent().build();
+    }
 }

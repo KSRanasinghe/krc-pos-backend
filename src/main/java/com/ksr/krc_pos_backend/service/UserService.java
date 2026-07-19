@@ -5,6 +5,7 @@ import com.ksr.krc_pos_backend.dto.UserRequestDto;
 import com.ksr.krc_pos_backend.dto.UserResponseDto;
 import com.ksr.krc_pos_backend.model.RefreshToken;
 import com.ksr.krc_pos_backend.model.User;
+import com.ksr.krc_pos_backend.repo.RefreshTokenRepo;
 import com.ksr.krc_pos_backend.repo.UserRepo;
 import com.ksr.krc_pos_backend.security.AppUserDetails;
 import com.ksr.krc_pos_backend.security.JwtService;
@@ -24,6 +25,7 @@ public class UserService {
     private final AuthenticationManager authManager;
     private final RefreshTokenService refreshTokenService;
     private final JwtService jwtService;
+    private final RefreshTokenRepo refreshTokenRepo;
 
     public UserResponseDto register(@RequestBody UserRequestDto userRequestDto) {
         User user = User.builder()
@@ -82,5 +84,13 @@ public class UserService {
                                 .build()
                 )
                 .build();
+    }
+
+    public void logout(String refreshToken) {
+        RefreshToken token = refreshTokenRepo.findByToken(refreshToken)
+                .orElseThrow(() -> new RuntimeException("Token not found"));
+
+        token.setRevoked(true);
+        refreshTokenRepo.save(token);
     }
 }
