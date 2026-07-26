@@ -2,6 +2,7 @@ package com.ksr.krc_pos_backend.repo;
 
 import com.ksr.krc_pos_backend.model.Order;
 import com.ksr.krc_pos_backend.model.OrderItem;
+import com.ksr.krc_pos_backend.model.TaskVariant;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -14,4 +15,6 @@ public interface OrderItemRepo extends JpaRepository<OrderItem, Integer> {
     Optional<OrderItem> findByUuid(UUID uuid);
 
     List<OrderItem> findByOrder(Order order);
+
+    Optional<OrderItem> findByOrderAndTaskVariant(Order order, TaskVariant variant);
 }

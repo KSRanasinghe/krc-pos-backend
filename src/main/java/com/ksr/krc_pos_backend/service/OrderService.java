@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -117,27 +118,35 @@ public class OrderService {
         orderItemRepo.delete(item);
     }
 
+    @Transactional
     public OrderSummaryDto addNewItems(UUID uuid, List<OrderItemReqDto> items) {
         Order order = orderRepo.findByUuid(uuid)
                 .orElseThrow(() -> new RuntimeException("Order not found"));
 
-        List<OrderItem> orderItems = items
-                .stream()
-                .map(itemDto -> {
-                    //get the matching variant
-                    TaskVariant variant = variantsRepo.findByUuid(itemDto.getVariantUuid())
-                            .orElseThrow(() -> new RuntimeException("Variant not found"));
+        for (OrderItemReqDto itemDto: items){
+            //get the matching variant
+            TaskVariant variant = variantsRepo.findByUuid(itemDto.getVariantUuid())
+                    .orElseThrow(() -> new RuntimeException("Variant not found"));
 
-                    return OrderItem.builder()
-                            .quantity(itemDto.getQuantity())
-                            .unitPrice(variant.getPrice())
-                            .taskVariant(variant)
-                            .order(order)
-                            .build();
-                })
-                .toList();
+            //check is existing item
+            Optional<OrderItem> existingItem = orderItemRepo.findByOrderAndTaskVariant(order, variant);
 
-        orderItemRepo.saveAll(orderItems);
+            if(existingItem.isPresent()){
+                OrderItem item = existingItem.get();
+                item.setQuantity(item.getQuantity() + itemDto.getQuantity());
+                orderItemRepo.save(item);
+            }else{
+                OrderItem newItem = OrderItem
+                        .builder()
+                        .order(order)
+                        .taskVariant(variant)
+                        .quantity(itemDto.getQuantity())
+                        .unitPrice(variant.getPrice())
+                        .build();
+                orderItemRepo.save(newItem);
+            }
+        }
+
         order.setUpdatedAt(LocalDateTime.now());
         Order savedOrder = orderRepo.save(order);
         return getOrderSummaryDto(savedOrder);
