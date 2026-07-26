@@ -18,7 +18,7 @@ public interface OrderRepo extends JpaRepository<Order, Integer> {
     @Query("SELECT o FROM Order o WHERE " +
             "(:status IS NULL OR o.status = :status) AND " +
             "(:orderNo IS NULL OR o.orderNo = :orderNo) AND " +
-            "(:phone IS NULL OR o.customer.phone = :phone)")
+            "(:phone IS NULL OR o.customer.phone LIKE %:phone%)")
     List<Order> findByFilters(@Param("status") OrderStatus status,
                               @Param("orderNo") String orderNo,
                               @Param("phone") String phone);
