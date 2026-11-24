@@ -34,7 +34,7 @@ public class InvoiceController {
             @PathVariable UUID orderUuid, @RequestParam(defaultValue = "0") Double discount) throws Exception {
         PdfResponse response = invoiceService.createInvoice(orderUuid, discount);
         return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + response.getInvNo() + ".pdf")
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + response.getFileName() + ".pdf")
                 .contentType(MediaType.APPLICATION_PDF)
                 .body(response.getPdf());
     }
@@ -43,7 +43,7 @@ public class InvoiceController {
     public ResponseEntity<byte[]> getInvoicePdf(@PathVariable UUID uuid) throws Exception {
         PdfResponse response = invoiceService.getInvoicePdf(uuid);
         return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + response.getInvNo() + ".pdf")
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + response.getFileName() + ".pdf")
                 .contentType(MediaType.APPLICATION_PDF)
                 .body(response.getPdf());
     }

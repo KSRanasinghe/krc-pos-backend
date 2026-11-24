@@ -34,7 +34,11 @@ public class Customer {
 
     private String note;
 
+    @Column(nullable = false)
+    @Builder.Default
+    private Double walletBalance = 0.0;
+
     @CreationTimestamp
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, updatable = false, unique = true)
     private LocalDateTime createdAt;
 }

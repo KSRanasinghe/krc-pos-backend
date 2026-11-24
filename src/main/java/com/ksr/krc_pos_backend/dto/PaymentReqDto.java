@@ -13,7 +13,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PaymentReqDto {
-    private UUID invUuid;
+    private String phone;
     private Double amount;
-    private PaymentMethod paymentMethod;
+    private PaymentMethod method;
 }

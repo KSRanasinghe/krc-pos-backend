@@ -31,12 +31,11 @@ public class Payment {
     private Double amount;
 
     @Enumerated(EnumType.STRING)
-    @Builder.Default
-    private PaymentMethod method = PaymentMethod.BANK;
+    private PaymentMethod method;
 
     @ManyToOne
-    @JoinColumn(name = "invoice_id",  nullable = false)
-    private Invoice invoice;
+    @JoinColumn(name = "customer_id",  nullable = false)
+    private Customer customer;
 
     @CreationTimestamp
     private LocalDateTime paidAt;

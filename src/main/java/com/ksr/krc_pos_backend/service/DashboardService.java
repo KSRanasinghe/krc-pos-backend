@@ -3,6 +3,7 @@ package com.ksr.krc_pos_backend.service;
 import com.ksr.krc_pos_backend.dto.DashboardDto;
 import com.ksr.krc_pos_backend.model.enums.InvoiceStatus;
 import com.ksr.krc_pos_backend.model.enums.OrderStatus;
+import com.ksr.krc_pos_backend.model.enums.PaymentMethod;
 import com.ksr.krc_pos_backend.repo.InvoiceRepo;
 import com.ksr.krc_pos_backend.repo.OrderRepo;
 import com.ksr.krc_pos_backend.repo.PaymentRepo;
@@ -18,7 +19,7 @@ public class DashboardService {
 
     public DashboardDto getDashboard() {
         return DashboardDto.builder()
-                .monthlyRevenue(paymentRepo.getMonthlyRevenue())
+                .monthlyRevenue(paymentRepo.getMonthlyRevenue(PaymentMethod.WALLET_DEDUCTION))
                 .pendingOrders(orderRepo.countByStatus(OrderStatus.PENDING))
                 .unpaidInvoices(invoiceRepo.countByStatus(InvoiceStatus.UNPAID))
                 .build();

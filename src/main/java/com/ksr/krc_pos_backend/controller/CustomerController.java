@@ -1,6 +1,7 @@
 package com.ksr.krc_pos_backend.controller;
 
 import com.ksr.krc_pos_backend.dto.CustomerDto;
+import com.ksr.krc_pos_backend.dto.CustomerDueDto;
 import com.ksr.krc_pos_backend.service.CustomerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -18,5 +19,10 @@ public class CustomerController {
     @GetMapping("/search")
     public ResponseEntity<List<CustomerDto>> searchByPhone(@RequestParam String phone) {
         return ResponseEntity.ok(customerService.searchByPhone(phone));
+    }
+
+    @GetMapping("/{phone}/due")
+    public ResponseEntity<CustomerDueDto> getCustomerDue(@PathVariable String phone) {
+        return ResponseEntity.ok(customerService.getCustomerDue(phone));
     }
 }

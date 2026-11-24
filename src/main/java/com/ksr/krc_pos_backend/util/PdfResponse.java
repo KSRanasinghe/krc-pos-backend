@@ -6,6 +6,6 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class PdfResponse {
-    private String invNo;
+    private String fileName;
     private byte[] pdf;
 }

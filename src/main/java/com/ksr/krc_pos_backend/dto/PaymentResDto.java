@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Data
@@ -15,8 +16,11 @@ import java.util.UUID;
 @AllArgsConstructor
 public class PaymentResDto {
     private UUID uuid;
-    private String invNo;
+    private String phone;
+    private String customerName;
     private Double amount;
     private PaymentMethod method;
     private LocalDateTime paidAt;
+    private Double walletBalance;
+    private List<SettledInvoiceDto> settledInvoices;
 }

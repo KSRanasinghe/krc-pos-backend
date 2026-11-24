@@ -3,24 +3,25 @@ package com.ksr.krc_pos_backend.repo;
 import com.ksr.krc_pos_backend.model.Invoice;
 import com.ksr.krc_pos_backend.model.Payment;
 import com.ksr.krc_pos_backend.model.enums.InvoiceStatus;
+import com.ksr.krc_pos_backend.model.enums.PaymentMethod;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @Repository
 public interface PaymentRepo extends JpaRepository<Payment, Integer> {
-    @Query("SELECT COALESCE(SUM(p.amount), 0) FROM Payment p WHERE p.invoice = :invoice")
-    Double sumByInvoice(@Param("invoice") Invoice invoice);
+    Optional<Payment> findByUuid(UUID uuid);
 
-    @Query("SELECT p FROM Payment p WHERE " +
-            "(:invNo IS NULL OR p.invoice.invNumber = :invNo)")
-    List<Payment> findByFilters(@Param("invNo") String invNo);
+    List<Payment> findByCustomerPhoneContaining(String phone);
 
     @Query("SELECT COALESCE(SUM(p.amount), 0) FROM Payment p WHERE " +
+            "p.method <> :excluded AND " +
             "MONTH(p.paidAt) = MONTH(CURRENT_DATE) AND " +
             "YEAR(p.paidAt) = YEAR(CURRENT_DATE)")
-    Double getMonthlyRevenue();
+    Double getMonthlyRevenue(@Param("excluded") PaymentMethod excluded);
 }
