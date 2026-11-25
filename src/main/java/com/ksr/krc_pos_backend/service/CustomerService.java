@@ -25,6 +25,7 @@ public class CustomerService {
                         .name(customer.getName())
                         .phone(customer.getPhone())
                         .note(customer.getNote())
+                        .walletBalance(customer.getWalletBalance())
                         .build())
                 .collect(Collectors.toList());
     }
@@ -51,5 +52,18 @@ public class CustomerService {
         // 3. Build and return CustomerDueDto
         return CustomerDueDto.builder()
                 .totalDue(totalDue).build();
+    }
+
+    public List<CustomerDto> getAllCustomers(String phone) {
+        return customerRepo.findByPhoneContaining(phone != null ? phone : "")
+                .stream()
+                .map(customer -> CustomerDto.builder()
+                        .uuid(customer.getUuid())
+                        .name(customer.getName())
+                        .phone(customer.getPhone())
+                        .note(customer.getNote())
+                        .walletBalance(customer.getWalletBalance())
+                        .build())
+                .collect(Collectors.toList());
     }
 }

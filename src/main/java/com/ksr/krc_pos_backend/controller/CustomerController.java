@@ -16,6 +16,13 @@ public class CustomerController {
 
     private final CustomerService customerService;
 
+    @GetMapping
+    public ResponseEntity<List<CustomerDto>> getAllCustomers(
+            @RequestParam(required = false) String phone
+    ) {
+        return ResponseEntity.ok(customerService.getAllCustomers(phone));
+    }
+
     @GetMapping("/search")
     public ResponseEntity<List<CustomerDto>> searchByPhone(@RequestParam String phone) {
         return ResponseEntity.ok(customerService.searchByPhone(phone));

@@ -16,4 +16,5 @@ public class CustomerDto {
     private String name;
     private String phone;
     private String note;
+    private Double walletBalance;
 }
