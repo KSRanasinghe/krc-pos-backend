@@ -47,4 +47,9 @@ public class InvoiceController {
                 .contentType(MediaType.APPLICATION_PDF)
                 .body(response.getPdf());
     }
+
+    @GetMapping("/{uuid}")
+    public ResponseEntity<InvoiceSummaryDto> getInvoice(@PathVariable UUID uuid) throws Exception {
+        return ResponseEntity.ok(invoiceService.getInvoice(uuid));
+    }
 }

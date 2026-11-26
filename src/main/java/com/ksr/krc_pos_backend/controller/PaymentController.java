@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/payments")
@@ -29,6 +30,16 @@ public class PaymentController {
     public ResponseEntity<byte[]> createPayment(@RequestBody PaymentReqDto paymentReqDto)
             throws Exception {
         PdfResponse response = paymentService.createPayment(paymentReqDto);
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION,
+                        "attachment; filename=" + response.getFileName() + ".pdf")
+                .contentType(MediaType.APPLICATION_PDF)
+                .body(response.getPdf());
+    }
+
+    @GetMapping("/{uuid}/pdf")
+    public ResponseEntity<byte[]> getPaymentPdf(@PathVariable UUID uuid) throws Exception {
+        PdfResponse response = paymentService.getPaymentPdf(uuid);
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION,
                         "attachment; filename=" + response.getFileName() + ".pdf")

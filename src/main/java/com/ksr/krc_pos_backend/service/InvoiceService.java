@@ -102,20 +102,25 @@ public class InvoiceService {
         return getInvoicePdf(invoice.getUuid());
     }
 
+    private InvoiceSummaryDto mapToSummaryDto(Invoice invoice) {
+        return InvoiceSummaryDto.builder()
+                .uuid(invoice.getUuid())
+                .invNo(invoice.getInvNumber())
+                .orderNo(invoice.getOrder().getOrderNo())
+                .customer(invoice.getCustomer().getName())
+                .netTotal(invoice.getNetTotal())
+                .paid(allocationRepo.sumAllocatedByInvoice(invoice))
+                .status(invoice.getStatus())
+                .createdAt(invoice.getCreatedAt())
+                .updatedAt(invoice.getUpdatedAt())
+                .build();
+    }
+
     public List<InvoiceSummaryDto> getAllInvoices(String invNo, String phone, InvoiceStatus status) {
         String formattedInvNo = invNo != null ? "INV-" + invNo : null;
         return invoiceRepo.findByFilters(formattedInvNo, phone, status)
                 .stream()
-                .map(invoice -> InvoiceSummaryDto.builder()
-                        .uuid(invoice.getUuid())
-                        .invNo(invoice.getInvNumber())
-                        .orderNo(invoice.getOrder().getOrderNo())
-                        .customer(invoice.getCustomer().getName())
-                        .netTotal(invoice.getNetTotal())
-                        .status(invoice.getStatus())
-                        .createdAt(invoice.getCreatedAt())
-                        .updatedAt(invoice.getUpdatedAt())
-                        .build())
+                .map(this::mapToSummaryDto)
                 .toList();
     }
 
@@ -129,5 +134,12 @@ public class InvoiceService {
         Double balanceDue = invoice.getNetTotal() - paid;
 
         return pdfService.generateInvoicePdf(invoice, orderItems, paid, balanceDue);
+    }
+
+    public InvoiceSummaryDto getInvoice(UUID uuid) throws Exception {
+        Invoice invoice = invoiceRepo.findByUuid(uuid)
+                .orElseThrow(() -> new RuntimeException("Invoice not found"));
+
+        return mapToSummaryDto(invoice);
     }
 }

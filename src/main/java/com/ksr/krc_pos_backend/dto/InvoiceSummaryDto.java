@@ -20,6 +20,7 @@ public class InvoiceSummaryDto {
     private String orderNo;
     private String customer;
     private Double netTotal;
+    private Double paid;
     private InvoiceStatus status;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
