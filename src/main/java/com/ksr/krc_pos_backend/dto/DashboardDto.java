@@ -13,4 +13,5 @@ public class DashboardDto {
     private Double monthlyRevenue;
     private Long pendingOrders;
     private Long unpaidInvoices;
+    private Double totalDueSum;
 }

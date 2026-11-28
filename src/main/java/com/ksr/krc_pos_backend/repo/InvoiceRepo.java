@@ -30,4 +30,6 @@ public interface InvoiceRepo extends JpaRepository<Invoice, Integer> {
 
     List<Invoice> findByCustomerAndStatusInOrderByCreatedAtAsc(
             Customer customer, List<InvoiceStatus> statuses);
+
+    List<Invoice> findByStatusIn(List<InvoiceStatus> statuses);
 }

@@ -16,12 +16,14 @@ public class DashboardService {
     private final OrderRepo orderRepo;
     private final InvoiceRepo invoiceRepo;
     private final PaymentRepo paymentRepo;
+    private final AllocationService allocationService;
 
     public DashboardDto getDashboard() {
         return DashboardDto.builder()
                 .monthlyRevenue(paymentRepo.getMonthlyRevenue(PaymentMethod.WALLET_DEDUCTION))
                 .pendingOrders(orderRepo.countByStatus(OrderStatus.PENDING))
                 .unpaidInvoices(invoiceRepo.countByStatus(InvoiceStatus.UNPAID))
+                .totalDueSum(allocationService.calculateTotalDueSum())
                 .build();
     }
 }

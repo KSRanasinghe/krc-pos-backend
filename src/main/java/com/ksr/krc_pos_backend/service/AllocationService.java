@@ -66,4 +66,15 @@ public class AllocationService {
 
         return totalDue;
     }
+
+    public Double calculateTotalDueSum() {
+        List<Invoice> invoices = invoiceRepo.findByStatusIn(
+                List.of(InvoiceStatus.UNPAID, InvoiceStatus.PARTIAL));
+
+        double totalDue = 0.0;
+        for (Invoice invoice : invoices) {
+            totalDue += invoice.getNetTotal() - allocationRepo.sumAllocatedByInvoice(invoice);
+        }
+        return totalDue;
+    }
 }
